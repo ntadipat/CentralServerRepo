@@ -1,11 +1,11 @@
 package com.app.hotel.service;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.app.hotel.dao.HotelRoomsDao;
 import com.app.hotel.model.BookingDetails;
@@ -34,21 +34,15 @@ public class HotelRoomsService {
 	
 	public HotelAndRoomDetails postBookingDetails(BookingDetails bookingdetails){
 		int count = roomsDao.postBookingDetails(bookingdetails);
-		HotelAndRoomDetails handrDetails = new HotelAndRoomDetails();
+		HotelAndRoomDetails hotelAndRoomDetails = new HotelAndRoomDetails();
 		long totalAmount = 0;
 		if(count>0){
-			Hotel hotel = roomsDao.getHotelDetails(bookingdetails.getH_id());
-			totalAmount = Long.parseLong(bookingdetails.getR_cost())+20;
-			handrDetails.setTotalAmount(totalAmount);
-			handrDetails.setU_name(bookingdetails.getU_name());
-			handrDetails.setH_name(hotel.getHotel_name());
-			handrDetails.setL_name(hotel.getL_name());
-			handrDetails.setH_address(hotel.getH_address());
-			handrDetails.setR_num(bookingdetails.getR_num());
-			handrDetails.setCheckin_date(bookingdetails.getCheckInDate());
-			handrDetails.setCheckout_date(bookingdetails.getCheckOutDate());
+			hotelAndRoomDetails = roomsDao.getHotelRoomAndDetails(bookingdetails.getH_id());			
+			long noOfDays = TimeUnit.DAYS.convert((bookingdetails.getCheckOutDate().getTime()-bookingdetails.getCheckInDate().getTime()), TimeUnit.MILLISECONDS);
+			totalAmount = Long.parseLong(hotelAndRoomDetails.getR_cost())*noOfDays+(noOfDays*20);
+			hotelAndRoomDetails.setTotalAmount(totalAmount);
 		}
-		return handrDetails;
+		return hotelAndRoomDetails;
 	}
 	
 	/*public String confirmRoom(){

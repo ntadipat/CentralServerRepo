@@ -68,6 +68,35 @@ public class HotelRoomsDao {
 		return hotel;
 	}
 	
+	public HotelAndRoomDetails getHotelRoomAndDetails(String id){
+		
+		HotelAndRoomDetails hotel = jdbctemplate.queryForObject("SELECT hot.id as hotel_id,hot.hotel_name as hotel_name,hot.l_name as loc_name, hot.h_adrss as h_address, "
+				+ "rmd.u_id, rmd.u_name, rmd.r_id, rmd.r_num, rmd.r_cost, rmd.no_of_persons, rmd.max_members_allowed, rmd.checkin_date, rmd.checkout_date from sys.hotels hot,"
+				+ " sys.room_booking_details rmd where hot.id=?", new Object[] { id }, new RowMapper<HotelAndRoomDetails>(){
+
+			@Override
+			public HotelAndRoomDetails mapRow(ResultSet rs, int rowNum) throws SQLException {
+				HotelAndRoomDetails hotel = new HotelAndRoomDetails();
+				hotel.setH_id(rs.getString("hotel_id"));
+				hotel.setH_name(rs.getString("hotel_name"));
+				hotel.setL_name(rs.getString("loc_name"));
+				hotel.setH_address(rs.getString("h_address"));
+				hotel.setU_id(rs.getString("u_id"));
+				hotel.setU_name(rs.getString("u_name"));
+				hotel.setR_id(rs.getString("r_id"));
+				hotel.setR_num(rs.getString("r_num"));
+				hotel.setR_cost(rs.getString("r_cost"));
+				hotel.setNo_of_persons(rs.getInt("no_of_persons"));
+				hotel.setMax_members_allowed(rs.getInt("max_members_allowed"));
+				hotel.setCheckin_date(rs.getDate("checkin_date"));
+				hotel.setCheckout_date(rs.getDate("checkout_date"));
+				return hotel;
+			}}
+			);
+		
+		return hotel;
+	}
+	
 	public int postBookingDetails(BookingDetails bookingdetails){
 		int noOfRowsUpdated=0;
 		try{
@@ -85,48 +114,28 @@ public class HotelRoomsDao {
 		});
 		
 			if(noOfUserRecords>0){
+		//"update sys.room_booking_details set u_id=?, r_available=?,max_members_allowed=?,no_of_persons=?,is_booked=?,checkin_date=?,checkout_date=? where r_id=? and h_id=? and r_num=?"
+				noOfRowsUpdated=jdbctemplate.update("update sys.room_booking_details set u_id=?, u_name=?,max_members_allowed=?,no_of_persons=?,is_booked=?,"
+						+ "checkin_date=?,checkout_date=? where r_id=? and h_id=? and r_num=?", new PreparedStatementSetter(){
 		
-				noOfRowsUpdated=jdbctemplate.update("insert into sys.room_booking_details(r_id,h_id,u_id,r_num,"
-						+ "r_type,r_available,r_cost,max_members_allowed,no_of_persons,is_booked,checkin_date,checkout_date) values(?,?,?,?,?,?,?,?,?,?,?,?)", new PreparedStatementSetter(){
-		
-					@Override
-					public void setValues(PreparedStatement ps) throws SQLException {
-						ps.setString(1, bookingdetails.getR_id());
-						ps.setString(2, bookingdetails.getH_id());
-						ps.setString(3, bookingdetails.getU_id());
-						ps.setString(4, bookingdetails.getR_num());
-						ps.setString(5, bookingdetails.getR_type());
-						ps.setString(6, bookingdetails.isRoomAvailable());
-						ps.setString(7, bookingdetails.getR_cost());
-						ps.setInt(8, bookingdetails.getMax_members_allowed());
-						ps.setInt(9, bookingdetails.getNo_of_persons());
-						ps.setString(10, bookingdetails.isRoomBooked());
-						ps.setDate(11, bookingdetails.getCheckInDate());
-						ps.setDate(12, bookingdetails.getCheckOutDate());
-					}});
+							@Override
+							public void setValues(PreparedStatement ps) throws SQLException {
+								ps.setString(1, bookingdetails.getU_id());
+								ps.setString(2, bookingdetails.getU_name());
+								ps.setInt(3, 4);
+								ps.setInt(4, bookingdetails.getNo_of_persons());
+								ps.setString(5, "N");
+								ps.setDate(6, bookingdetails.getCheckInDate());
+								ps.setDate(7, bookingdetails.getCheckOutDate());
+								ps.setString(8, bookingdetails.getR_id());
+								ps.setString(9, bookingdetails.getH_id());
+								ps.setString(10, bookingdetails.getR_num());
+							}});
 			}
 		}catch(Exception e){
 			return 0;
 		}
-		/*jdbctemplate.execute("",new PreparedStatementCallback<HotelAndRoomDetails>(){
-
-			@Override
-			public HotelAndRoomDetails doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
-				HotelAndRoomDetails hotelAndroomsDetails = new HotelAndRoomDetails();
-				ps.setString(1, bookingdetails.getR_id());
-				ps.setString(2, bookingdetails.getH_id());
-				ps.setString(3, bookingdetails.getU_id());
-				ps.setString(4, bookingdetails.getR_num());
-				ps.setString(5, bookingdetails.getR_type());
-				ps.setString(6, bookingdetails.isRoomAvailable());
-				ps.setString(7, bookingdetails.getR_cost());
-				ps.setInt(8, bookingdetails.getMax_members_allowed());
-				ps.setInt(9, bookingdetails.getNo_of_persons());
-				ps.setString(10, bookingdetails.isRoomBooked());
-				ps.setDate(11, bookingdetails.getCheckInDate());
-				ps.setDate(12, bookingdetails.getCheckOutDate());				
-				return null;
-			}});*/
+		
 		return noOfRowsUpdated;
 	}
 }

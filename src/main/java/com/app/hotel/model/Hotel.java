@@ -10,6 +10,7 @@ public class Hotel {
 	private String hotel_name;
 	private int numberOfRooms;
 	private String l_name;
+	private String l_id;
 	private String h_address;
 	
 	
@@ -42,6 +43,12 @@ public class Hotel {
 	}
 	public void setH_address(String h_address) {
 		this.h_address = h_address;
+	}
+	public String getL_id() {
+		return l_id;
+	}
+	public void setL_id(String l_id) {
+		this.l_id = l_id;
 	}
 	
 }

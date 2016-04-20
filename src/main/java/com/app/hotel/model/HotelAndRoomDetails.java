@@ -4,12 +4,18 @@ import java.util.Date;
 
 public class HotelAndRoomDetails {
 	
-	private double totalAmount;
+	private double totalAmount;	
 	private String h_name;
 	private String h_address;
 	private String l_name;
+	private String h_id;
+	private String r_id;
+	private int no_of_persons;
+	private int max_members_allowed;
 	private String r_num;
+	private String u_id;
 	private String u_name;
+	private String r_cost;
 	private Date checkin_date;
 	private Date checkout_date;
 	public double getTotalAmount() {
@@ -59,6 +65,42 @@ public class HotelAndRoomDetails {
 	}
 	public void setH_address(String h_address) {
 		this.h_address = h_address;
+	}
+	public String getH_id() {
+		return h_id;
+	}
+	public void setH_id(String h_id) {
+		this.h_id = h_id;
+	}
+	public String getR_id() {
+		return r_id;
+	}
+	public void setR_id(String r_id) {
+		this.r_id = r_id;
+	}
+	public int getNo_of_persons() {
+		return no_of_persons;
+	}
+	public void setNo_of_persons(int no_of_persons) {
+		this.no_of_persons = no_of_persons;
+	}
+	public int getMax_members_allowed() {
+		return max_members_allowed;
+	}
+	public void setMax_members_allowed(int max_members_allowed) {
+		this.max_members_allowed = max_members_allowed;
+	}
+	public String getU_id() {
+		return u_id;
+	}
+	public void setU_id(String u_id) {
+		this.u_id = u_id;
+	}
+	public String getR_cost() {
+		return r_cost;
+	}
+	public void setR_cost(String r_cost) {
+		this.r_cost = r_cost;
 	}
 	
 	
