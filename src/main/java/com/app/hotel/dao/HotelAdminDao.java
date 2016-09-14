@@ -2,7 +2,6 @@ package com.app.hotel.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,19 +20,11 @@ public class HotelAdminDao {
 	private JdbcTemplate jdbctemplate;
 	public int  postHotelDetails(Hotel hotel){
 		int noOfHotelRecords = 0;
-		int noOfLocationRecords = 0;
+		int locationCount = 0;
 		try{
-			noOfLocationRecords=jdbctemplate.update("insert into sys.location(id,locationName,noOfHotels) values(?,?,10)",new PreparedStatementSetter(){
-
-				@Override
-				public void setValues(PreparedStatement ps) throws SQLException {
-					ps.setString(1, hotel.getL_id());
-					ps.setString(2, hotel.getL_name());
-				}
-				
-			});
 			
-			if(noOfLocationRecords>0)
+			locationCount = jdbctemplate.queryForObject("SELECT count(1) FROM sys.location where id=?",new Object[]{hotel.getHotel_id()},Integer.class);			
+			if(locationCount>0)
 			noOfHotelRecords = jdbctemplate.update("insert into sys.hotels(id,l_id,hotel_name,l_name,h_adrss,noOfRooms) values(?,?,?,?,?,?)", new PreparedStatementSetter(){
 
 			@Override

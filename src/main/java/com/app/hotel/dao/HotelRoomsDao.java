@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -115,7 +117,7 @@ public class HotelRoomsDao {
 		
 			if(noOfUserRecords>0){
 		//"update sys.room_booking_details set u_id=?, r_available=?,max_members_allowed=?,no_of_persons=?,is_booked=?,checkin_date=?,checkout_date=? where r_id=? and h_id=? and r_num=?"
-				noOfRowsUpdated=jdbctemplate.update("update sys.room_booking_details set u_id=?, u_name=?,max_members_allowed=?,no_of_persons=?,is_booked=?,"
+				noOfRowsUpdated=jdbctemplate.update("update sys.room_booking_details set u_id=?, u_name=?,max_members_allowed=?,no_of_persons=?,is_booked=?, is_filled=?"
 						+ "checkin_date=?,checkout_date=? where r_id=? and h_id=? and r_num=?", new PreparedStatementSetter(){
 		
 							@Override
@@ -125,11 +127,12 @@ public class HotelRoomsDao {
 								ps.setInt(3, 4);
 								ps.setInt(4, bookingdetails.getNo_of_persons());
 								ps.setString(5, "N");
-								ps.setDate(6, bookingdetails.getCheckInDate());
-								ps.setDate(7, bookingdetails.getCheckOutDate());
-								ps.setString(8, bookingdetails.getR_id());
-								ps.setString(9, bookingdetails.getH_id());
-								ps.setString(10, bookingdetails.getR_num());
+								ps.setString(6, "N");
+								ps.setDate(7, bookingdetails.getCheckInDate());
+								ps.setDate(8, bookingdetails.getCheckOutDate());
+								ps.setString(9, bookingdetails.getR_id());
+								ps.setString(10, bookingdetails.getH_id());
+								ps.setString(11, bookingdetails.getR_num());
 							}});
 			}
 		}catch(Exception e){
@@ -137,5 +140,23 @@ public class HotelRoomsDao {
 		}
 		
 		return noOfRowsUpdated;
+	}
+	
+	public int updateBookingStatus(HttpServletRequest request){
+		request.getParameter("loc_id");
+		request.getParameter("hotel_id");
+		request.getParameter("room_id");
+		int noOfRecords = jdbctemplate.update("update sys.room_booking_details set is_booked=? where h_id=?, r_id=?", new PreparedStatementSetter(){
+
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setString(1, "Y");				
+				ps.setString(2, request.getParameter("hotel_id"));
+				ps.setString(3, request.getParameter("room_id"));
+			}
+			
+		});
+		
+		return noOfRecords;
 	}
 }

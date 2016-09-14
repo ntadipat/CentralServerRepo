@@ -1,5 +1,7 @@
 package com.app.hotel.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,7 @@ public class HotelRoomsController {
     
     @RequestMapping(value="/hotel/{hotelId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Hotel> getHotelDetails(@PathVariable("hotelId") String id) {
-    	System.out.println("Greeting!!!!!");
+    	System.out.println("In getHotelDetails");
         return roomsService.getHotelDetails(id);
     }
     
@@ -39,10 +41,10 @@ public class HotelRoomsController {
     	return new ResponseEntity<HotelAndRoomDetails>(handrDetails,HttpStatus.OK);
     }
     
-   /* @RequestMapping(value="/room/confirm/", method = RequestMethod.POST,consumes ="application/json")
-    public ResponseEntity<> confirm(){
-    	
-    	
-    }*/
+    @RequestMapping(value="/room/confirm/", method = RequestMethod.POST,consumes ="application/json")
+    public ResponseEntity<HotelAndRoomDetails> confirm(HttpServletRequest request){
+    	 HotelAndRoomDetails hotelAndRoomDetails = roomsService.confirmBookingRoom(request);
+    	 return new ResponseEntity<HotelAndRoomDetails>(hotelAndRoomDetails,HttpStatus.OK);
+    }
     
  }

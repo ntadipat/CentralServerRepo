@@ -2,6 +2,8 @@ package com.app.hotel.service;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,9 +47,20 @@ public class HotelRoomsService {
 		return hotelAndRoomDetails;
 	}
 	
-	/*public String confirmRoom(){
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.exchange("", HttpMethod.POST,requestEntity, responseType);
-		return "";
-	}*/
-}
+	public HotelAndRoomDetails confirmBookingRoom(HttpServletRequest request){
+		//RestTemplate restTemplate = new RestTemplate();
+		//Calling payment gateway
+		//restTemplate.exchange("", HttpMethod.POST,requestEntity, responseType);
+		String response = "Success";
+		int noOfRecords = 0;
+		HotelAndRoomDetails hotelRoomsAndDetails = null;
+		if(response=="Success"){
+			noOfRecords = roomsDao.updateBookingStatus(request);
+			if(noOfRecords>0) {
+				hotelRoomsAndDetails = roomsDao.getHotelRoomAndDetails(request.getParameter("hotel_id"));
+			} 
+		}
+		
+		return hotelRoomsAndDetails;
+	}
+} 
